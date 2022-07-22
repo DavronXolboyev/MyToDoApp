@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_calendar"
+        android:title="@string/calendar"
+        android:icon="@drawable/ic_calendar"
+        android:checked="true"
+        />
+
+    <item
+        android:id="@+id/menu_to_do"
+        android:title="@string/to_do"
+        android:icon="@drawable/ic_to_do"
+        android:checked="true"
+        />
+
+    <item
+        android:id="@+id/menu_finance"
+        android:title="@string/finance"
+        android:icon="@drawable/ic_finance"
+        android:checked="true"
+        />
+
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_settings"
+        android:checked="true"
+        />
+
+</menu>
