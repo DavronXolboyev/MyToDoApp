@@ -44,8 +44,8 @@ class SignUpFragment : Fragment() {
 
     private fun userRegistration() {
         with(binding!!) {
-            val username = signUpUsername.text.toString()
-            val email = signUpEmail.text.toString()
+            val username = signUpUsername.text.toString().trim()
+            val email = signUpEmail.text.toString().trim()
             val password = signUpPassword.text.toString()
             val confirmPassword = signUpPasswordConfirm.text.toString()
             if (username.isNotEmpty()) {
@@ -54,7 +54,7 @@ class SignUpFragment : Fragment() {
                         if (confirmPassword.isNotEmpty()) {
                             if (password == confirmPassword) {
                                 if (isUserRegistered(username, email, password)) {
-                                    completeTheProcess()
+                                    completeTheProcess(email)
                                 }
                             } else {
                                 showToast("There are two types of passwords entered", true)
@@ -109,21 +109,30 @@ class SignUpFragment : Fragment() {
         ).show()
     }
 
-    private fun completeTheProcess() {
+    private fun completeTheProcess(email: String) {
         val sharedPreferences = requireContext()
             .getSharedPreferences(
                 DbConstants.Preference.NAME,
-                Context.MODE_PRIVATE)
+                Context.MODE_PRIVATE
+            )
 
         sharedPreferences.edit().apply {
             putBoolean(DbConstants.Preference.KEY_REGISTER, true)
+            val id = UserDatabaseHelper(requireContext()).getUserID(email)
+            if (id != null)
+                putInt(DbConstants.Preference.KEY_USER_ID, id)
+            putString(DbConstants.Preference.KEY_EMAIL_OR_USENAME,email)
             apply()
         }
 
         showToast("Process completed successfully")
 
-        startActivity(Intent(requireContext(),
-            MainActivity::class.java))
+        startActivity(
+            Intent(
+                requireContext(),
+                MainActivity::class.java
+            )
+        )
 
         activity?.finish()
     }

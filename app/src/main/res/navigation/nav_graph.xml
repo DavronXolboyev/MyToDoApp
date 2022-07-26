@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/calendarFragment">
+
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.xdmobile.to_doapp.fragments.main_fragments.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/financeFragment"
+        android:name="com.xdmobile.to_doapp.fragments.main_fragments.FinanceFragment"
+        android:label="fragment_fincance"
+        tools:layout="@layout/fragment_fincance" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.xdmobile.to_doapp.fragments.main_fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/toDoListFragment"
+        android:name="com.xdmobile.to_doapp.fragments.main_fragments.ToDoListFragment"
+        android:label="fragment_to_do_list"
+        tools:layout="@layout/fragment_to_do_list" />
+</navigation>

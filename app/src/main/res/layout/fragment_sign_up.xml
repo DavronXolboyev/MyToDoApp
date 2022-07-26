@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/art_board_background"
     tools:context=".fragments.SignUpFragment">
 
     <RelativeLayout
@@ -61,7 +62,7 @@
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="12dp">
+                >
 
                 <EditText
                     android:id="@+id/sign_up_username"
@@ -96,7 +97,7 @@
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="12dp">
+                >
 
                 <EditText
                     android:id="@+id/sign_up_email"
@@ -132,7 +133,7 @@
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="12dp">
+                >
 
                 <EditText
                     android:id="@+id/sign_up_password"
@@ -168,7 +169,7 @@
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="12dp">
+                >
 
                 <EditText
                     android:id="@+id/sign_up_password_confirm"

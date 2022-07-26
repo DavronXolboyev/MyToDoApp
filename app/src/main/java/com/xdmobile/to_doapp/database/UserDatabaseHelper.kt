@@ -74,13 +74,29 @@ class UserDatabaseHelper(val context: Context) : SQLiteOpenHelper(
         return cursor.count > 0
     }
 
-    fun isUserRegistered(username: String, password: String): Boolean {
+    fun isUserRegistered(emailOrUsername: String, password: String): Boolean {
         val db = this.readableDatabase
         val query =
-            "SELECT * FROM ${User.TABLE_NAME} WHERE ${User.USERNAME} = ? AND ${User.PASSWORD} = ?"
-        val isRegistered = db.rawQuery(query, arrayOf(username, password))
+            "SELECT * FROM ${User.TABLE_NAME} WHERE (${User.EMAIL} = ? OR ${User.USERNAME} = ?) AND ${User.PASSWORD} = ?"
+        val isRegistered = db.rawQuery(query, arrayOf(emailOrUsername, emailOrUsername, password))
 
-        return isRegistered.count != 0
+        return isRegistered.count > 0
     }
+
+    fun getUserID(emailOrUsername: String): Int? {
+        val query =
+            "SELECT ${User.ID} FROM ${User.TABLE_NAME} WHERE ${User.EMAIL} = ? OR ${User.USERNAME} = ? LIMIT 1"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, arrayOf(emailOrUsername, emailOrUsername))
+
+        var id: Int? = null
+
+        if (cursor.moveToNext()) {
+            id = cursor?.getInt(0)
+        }
+
+        return id
+    }
+
 
 }

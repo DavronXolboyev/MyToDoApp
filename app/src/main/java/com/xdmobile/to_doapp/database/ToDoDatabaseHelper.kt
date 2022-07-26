@@ -17,7 +17,7 @@ class ToDoDatabaseHelper(val context: Context) :
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable =
             "CREATE TABLE ${ToDoTable.TABLE_NAME} (" +
-                    "${ToDoTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "${ToDoTable.ID} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                     "${ToDoTable.INTENDED_WORK} TEXT NOT NULL," +
                     "${ToDoTable.DATE} DATE NOT NULL," +
                     "${ToDoTable.IS_FINISHED} INTEGER NOT NULL DEFAULT 0," +
@@ -37,12 +37,12 @@ class ToDoDatabaseHelper(val context: Context) :
         super.onDowngrade(db, oldVersion, newVersion)
     }
 
-    fun putData(toDoModel: ToDoModel, userModel: UserModel): Boolean {
+    fun putData(toDoModel: ToDoModel, user_id: Int): Boolean {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
             put(ToDoTable.INTENDED_WORK, toDoModel.intendedWork)
             put(ToDoTable.DATE, toDoModel.date)
-            put(ToDoTable.USER_ID, userModel.id)
+            put(ToDoTable.USER_ID, user_id)
         }
 
         val isInserted = db.insert(ToDoTable.TABLE_NAME, null, contentValues)
@@ -53,18 +53,32 @@ class ToDoDatabaseHelper(val context: Context) :
 
     fun deleterRow(id: Int): Boolean {
         val db = this.writableDatabase
-        val isDeleted = db.delete(ToDoTable.TABLE_NAME, "$id LIKE ?", arrayOf(id.toString()))
+        val isDeleted =
+            db.delete(ToDoTable.TABLE_NAME, "${ToDoTable.ID} LIKE ?", arrayOf(id.toString()))
 
         db.close()
         return isDeleted != -1
     }
 
+    fun deleteAllToDos(userId: Int) : Boolean{
+        val db = this.writableDatabase
+        val isDeletedAll = db.delete(
+            ToDoTable.TABLE_NAME,
+            "${ToDoTable.USER_ID} LIKE ?",
+            arrayOf(userId.toString())
+        )
+        db.close()
+        return isDeletedAll != -1
+    }
+
     // #########################
-    fun getDataCursor(userModel: UserModel): Cursor {
+    fun getDataCursor(user_id: Int): Cursor {
         val db = this.readableDatabase
         val cursor =
-            db.rawQuery("SELECT * FROM ${ToDoTable.TABLE_NAME} WHERE ${ToDoTable.USER_ID} = ?",
-                arrayOf(userModel.id.toString()))
+            db.rawQuery(
+                "SELECT * FROM ${ToDoTable.TABLE_NAME} WHERE ${ToDoTable.USER_ID} = ?",
+                arrayOf(user_id.toString())
+            )
 
         db.close()
         return cursor

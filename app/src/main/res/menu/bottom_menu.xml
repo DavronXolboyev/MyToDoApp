@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_calendar"
+        android:id="@+id/calendarFragment"
         android:title="@string/calendar"
         android:icon="@drawable/ic_calendar"
         android:checked="true"
         />
 
     <item
-        android:id="@+id/menu_to_do"
-        android:title="@string/to_do"
+        android:id="@+id/toDoListFragment"
+        android:title="@string/to_do_list"
         android:icon="@drawable/ic_to_do"
         android:checked="true"
         />
 
     <item
-        android:id="@+id/menu_finance"
+        android:id="@+id/financeFragment"
         android:title="@string/finance"
         android:icon="@drawable/ic_finance"
         android:checked="true"
         />
 
     <item
-        android:id="@+id/menu_settings"
+        android:id="@+id/settingsFragment"
         android:title="@string/settings"
         android:icon="@drawable/ic_settings"
         android:checked="true"

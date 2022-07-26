@@ -2,16 +2,14 @@ package com.xdmobile.to_doapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.Toast
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.xdmobile.to_doapp.database.DbConstants
+import com.xdmobile.to_doapp.database.UserDatabaseHelper
 import com.xdmobile.to_doapp.databinding.ActivityMainBinding
-import com.xdmobile.to_doapp.fragments.main_fragments.CalendarFragment
-import com.xdmobile.to_doapp.fragments.main_fragments.FinanceFragment
-import com.xdmobile.to_doapp.fragments.main_fragments.SettingsFragment
-import com.xdmobile.to_doapp.fragments.main_fragments.ToDoListFragment
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,36 +17,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        changeFragment(CalendarFragment())
-        binding.bottomNav.setOnItemSelectedListener(this)
-    }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNav.setupWithNavController(navController)
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val email = getSharedPreferences(
+            DbConstants.Preference.NAME,
+            MODE_PRIVATE
+        ).getString(DbConstants.Preference.KEY_EMAIL_OR_USENAME, "")
 
-        when (item.itemId) {
-            R.id.menu_calendar -> {
-                changeFragment(CalendarFragment())
-                return true
-            }
-            R.id.menu_to_do -> {
-                changeFragment(ToDoListFragment())
-                return true
-            }
-            R.id.menu_finance -> {
-                changeFragment(FinanceFragment())
-                return true
-            }
-            else -> {
-                changeFragment(SettingsFragment())
-                return true
-            }
-        }
+        val id = UserDatabaseHelper(this).getUserID(email!!)
 
-        return false
-    }
+        Toast.makeText(applicationContext, "$email || $id", Toast.LENGTH_LONG).show()
 
-    private fun changeFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.main_fragment_container, fragment)
-            .commit()
     }
 }

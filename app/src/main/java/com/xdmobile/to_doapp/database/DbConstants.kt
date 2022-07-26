@@ -24,10 +24,23 @@ class DbConstants {
         val PASSWORD = "user_password"
     }
 
+    object FinancialTransactions {
+        val TABLE_NAME = "financial_transactions"
+        val ID = "id"
+        val CARD_NAME = "card_name"
+        val CARD_NUMBER = "card_number"
+        val USER_ID = "user_id"
+        val CARD_BALANCE = "card_balance"
+        val EVENT_COST = "event_cost"
+        val CARD_TYPE = "card_type"
+        val BALANCE_TYPE = "balance_type"
+    }
+
     object Preference {
         val NAME = "login"
-        val KEY_REGISTER = "isRegistered"
-        val KEY_USER = "user"
+        val KEY_REGISTER = "is_registered"
+        val KEY_USER_ID = "user_id"
+        val KEY_EMAIL_OR_USENAME = "username_or_email"
     }
 
 

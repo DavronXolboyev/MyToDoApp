@@ -47,7 +47,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="4dp"
             android:fontFamily="@font/inter"
-            android:text="@string/username"
+            android:text="@string/email_or_username"
             android:textColor="@color/text_hint_color" />
 
         <androidx.cardview.widget.CardView
@@ -56,16 +56,16 @@
             android:layout_marginHorizontal="4dp"
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="12dp">
+            >
 
             <EditText
-                android:id="@+id/sign_in_username"
+                android:id="@+id/sign_in_user_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:fontFamily="@font/inter"
-                android:hint="@string/username"
-                android:inputType="text"
+                android:hint="@string/email_or_username"
+                android:inputType="text|textEmailAddress"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:paddingHorizontal="16dp"
@@ -93,7 +93,7 @@
             android:layout_marginHorizontal="4dp"
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="12dp">
+            >
 
             <EditText
                 android:id="@+id/sign_in_password"
