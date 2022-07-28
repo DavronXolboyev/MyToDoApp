@@ -17,4 +17,7 @@
     <color name="twitter_button_color">#4385F4</color>
     <color name="green">#00990F</color>
     <color name="red">#8B0101</color>
+
+    <color name="gold">#FFEB3B</color>
+    <color name="stratos">#090057</color>
 </resources>

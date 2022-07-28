@@ -3,6 +3,7 @@ package com.xdmobile.to_doapp.fragments.main_fragments
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,7 +12,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.edit
 import com.xdmobile.to_doapp.activities.WelcomeActivity
+import com.xdmobile.to_doapp.database.DbConstants
 import com.xdmobile.to_doapp.database.DbConstants.Preference
+import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.database.ToDoDatabaseHelper
 import com.xdmobile.to_doapp.database.UserDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentSettingsBinding
@@ -19,10 +22,13 @@ import com.xdmobile.to_doapp.model.UserModel
 import java.util.prefs.Preferences
 
 class SettingsFragment : Fragment() {
+
     private var _binding: FragmentSettingsBinding? = null
     private val binding: FragmentSettingsBinding get() = _binding!!
     private var preferences: SharedPreferences? = null
     private val itsEmpty = "It's empty!"
+    private lateinit var userDatabaseHelper : UserDatabaseHelper
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -30,12 +36,26 @@ class SettingsFragment : Fragment() {
 
         _binding = FragmentSettingsBinding.inflate(inflater)
         preferences = activity?.getSharedPreferences(Preference.NAME, Context.MODE_PRIVATE)
+        userDatabaseHelper = UserDatabaseHelper(requireContext())
 
+        initDataToViews()
 
         initListener()
 
 
         return binding.root
+    }
+
+    private fun initDataToViews() {
+        val userId = preferences?.getInt(Preference.KEY_USER_ID, -1)
+        val userModel = userDatabaseHelper.getUser(userId!!)
+
+        if (userModel != null) {
+            binding.settingsUsername.setText(userModel.username)
+            binding.settingsEmail.setText(userModel.email)
+            binding.settingsPassword.setText(userModel.password)
+        }
+
     }
 
     private fun initListener() {
@@ -49,9 +69,12 @@ class SettingsFragment : Fragment() {
             clearAllToDos(userId!!)
         }
 
+        binding.settingsClearAllFinancialTransactions.setOnClickListener {
+            clearAllFinancialTransactions(userId!!)
+        }
+
         binding.settingsEditButton.setOnClickListener {
             setEnabledToViews(true)
-
         }
 
         binding.settingsSaveButton.setOnClickListener {
@@ -77,8 +100,21 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun clearAllFinancialTransactions(userId: Int) {
+        try {
+            val financeDatabaseHelper = FinanceDatabaseHelper(requireContext())
+            if (financeDatabaseHelper.deleteAllDataWithUserId(userId)) {
+                Toast.makeText(requireContext(), "All to-dos have been deleted!", Toast.LENGTH_LONG)
+                    .show()
+            } else
+                Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG)
+                    .show()
+        } catch (e: SQLiteException) {
+            e.stackTrace
+        }
+    }
+
     private fun updateUserInfo(userId: Int, username: String, email: String, password: String) {
-        val userDatabaseHelper = UserDatabaseHelper(requireContext())
         val newUser = UserModel(userId, username, email, password)
         if (userDatabaseHelper.updateUserData(newUser)) {
             Toast.makeText(requireContext(), "Information has been updated", Toast.LENGTH_LONG)
@@ -86,15 +122,33 @@ class SettingsFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG).show()
         }
+        saveToSharedPreference(username)
+    }
+
+    private fun saveToSharedPreference(username: String) {
+        val sharedPreferences = requireContext()
+            .getSharedPreferences(
+                Preference.NAME,
+                Context.MODE_PRIVATE
+            )
+        sharedPreferences.edit().apply {
+            putString(Preference.KEY_EMAIL_OR_USENAME,username)
+            apply()
+        }
     }
 
     private fun clearAllToDos(userId: Int) {
-        val toDoDatabaseHelper = ToDoDatabaseHelper(requireContext())
-        if (toDoDatabaseHelper.deleteAllToDos(userId)) {
-            Toast.makeText(requireContext(), "All to-dos have been deleted!", Toast.LENGTH_LONG)
-                .show()
-        } else
-            Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG).show()
+        try {
+            val toDoDatabaseHelper = ToDoDatabaseHelper(requireContext())
+            if (toDoDatabaseHelper.deleteAllToDos(userId)) {
+                Toast.makeText(requireContext(), "All to-dos have been deleted!", Toast.LENGTH_LONG)
+                    .show()
+            } else
+                Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG)
+                    .show()
+        } catch (e: SQLiteException) {
+            e.stackTrace
+        }
     }
 
     private fun logOutOfProfile() {
@@ -114,8 +168,9 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        initDataToViews()
         _binding = null
         preferences = null
+        super.onDestroyView()
     }
 }

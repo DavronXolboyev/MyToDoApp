@@ -15,16 +15,7 @@ class ToDoDatabaseHelper(val context: Context) :
     SQLiteOpenHelper(context, DbConstants.DATABASE_NAME, null, DbConstants.VERSION_CODE) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTable =
-            "CREATE TABLE ${ToDoTable.TABLE_NAME} (" +
-                    "${ToDoTable.ID} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                    "${ToDoTable.INTENDED_WORK} TEXT NOT NULL," +
-                    "${ToDoTable.DATE} DATE NOT NULL," +
-                    "${ToDoTable.IS_FINISHED} INTEGER NOT NULL DEFAULT 0," +
-                    "${ToDoTable.USER_ID} INTEGER," +
-                    "FOREIGN KEY(${ToDoTable.USER_ID}) REFERENCES ${User.TABLE_NAME}(${User.ID})" +
-                    ")"
-        db?.execSQL(createTable)
+        db?.execSQL(DbConstants.CREATE_TO_DO_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -37,7 +28,7 @@ class ToDoDatabaseHelper(val context: Context) :
         super.onDowngrade(db, oldVersion, newVersion)
     }
 
-    fun putData(toDoModel: ToDoModel, user_id: Int): Boolean {
+    fun insertData(toDoModel: ToDoModel, user_id: Int): Boolean {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
             put(ToDoTable.INTENDED_WORK, toDoModel.intendedWork)
@@ -47,7 +38,7 @@ class ToDoDatabaseHelper(val context: Context) :
 
         val isInserted = db.insert(ToDoTable.TABLE_NAME, null, contentValues)
 
-        db.close()
+//        db.close()
         return isInserted != -1L
     }
 
@@ -60,14 +51,14 @@ class ToDoDatabaseHelper(val context: Context) :
         return isDeleted != -1
     }
 
-    fun deleteAllToDos(userId: Int) : Boolean{
+    fun deleteAllToDos(userId: Int): Boolean {
         val db = this.writableDatabase
         val isDeletedAll = db.delete(
             ToDoTable.TABLE_NAME,
             "${ToDoTable.USER_ID} LIKE ?",
             arrayOf(userId.toString())
         )
-        db.close()
+//        db.close()
         return isDeletedAll != -1
     }
 
@@ -80,7 +71,7 @@ class ToDoDatabaseHelper(val context: Context) :
                 arrayOf(user_id.toString())
             )
 
-        db.close()
+//        db.close()
         return cursor
     }
 

@@ -12,12 +12,11 @@ class UserDatabaseHelper(val context: Context) : SQLiteOpenHelper(
     DbConstants.DATABASE_NAME, null, DbConstants.VERSION_CODE
 ) {
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTable = "CREATE TABLE ${User.TABLE_NAME}(" +
-                "${User.ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "${User.USERNAME} VARCHAR(50) NOT NULL UNIQUE," +
-                "${User.EMAIL} VARCHAR(50) NOT NULL UNIQUE," +
-                "${User.PASSWORD} VARCHAR(50) NOT NULL)"
-        db?.execSQL(createTable)
+        db?.execSQL("PRAGMA foreign_keys = ON")
+        db?.execSQL(DbConstants.CREATE_USER_TABLE)
+        db?.execSQL(DbConstants.CREATE_CARDS_TABLE)
+        db?.execSQL(DbConstants.CREATE_FINANCIAL_TRANSACTIONS_TABLE)
+        db?.execSQL(DbConstants.CREATE_TO_DO_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -26,7 +25,7 @@ class UserDatabaseHelper(val context: Context) : SQLiteOpenHelper(
         onCreate(db)
     }
 
-    fun putUserData(user: UserModel): Boolean {
+    fun insertUserData(user: UserModel): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             with(user) {
@@ -98,5 +97,18 @@ class UserDatabaseHelper(val context: Context) : SQLiteOpenHelper(
         return id
     }
 
+    fun getUser(id: Int): UserModel? {
+        val db = this.readableDatabase
+        val query = "SELECT * FROM ${User.TABLE_NAME} WHERE ${User.ID} = ?"
+        val cursor = db.rawQuery(query, arrayOf(id.toString()))
+        if (cursor.count > 0) {
+            cursor.moveToNext()
+            val username = cursor.getString(1)
+            val email = cursor.getString(2)
+            val password = cursor.getString(3)
+            return UserModel(id, username, email, password)
+        }
+        return null
+    }
 
 }

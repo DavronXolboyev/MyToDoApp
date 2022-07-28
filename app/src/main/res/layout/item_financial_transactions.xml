@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semi_bold"
-            tools:text="10:15 AM"
+            tools:text="26.07.2022"
             android:textColor="@color/text_hint_color"
             android:textSize="14sp" />
 

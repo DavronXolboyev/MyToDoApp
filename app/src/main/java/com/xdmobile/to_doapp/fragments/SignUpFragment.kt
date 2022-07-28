@@ -17,16 +17,17 @@ import com.xdmobile.to_doapp.model.UserModel
 
 class SignUpFragment : Fragment() {
 
-    private var binding: FragmentSignUpBinding? = null
+    private var _binding: FragmentSignUpBinding? = null
+    private val binding : FragmentSignUpBinding get() = _binding!!
     private val itsEmpty = "It's empty!"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentSignUpBinding.inflate(inflater)
+        _binding = FragmentSignUpBinding.inflate(inflater)
 
-        with(binding!!) {
+        with(binding) {
 
             loginButton.setOnClickListener {
                 parentFragmentManager.beginTransaction()
@@ -39,11 +40,11 @@ class SignUpFragment : Fragment() {
 
         }
 
-        return binding!!.root
+        return binding.root
     }
 
     private fun userRegistration() {
-        with(binding!!) {
+        with(binding) {
             val username = signUpUsername.text.toString().trim()
             val email = signUpEmail.text.toString().trim()
             val password = signUpPassword.text.toString()
@@ -85,7 +86,7 @@ class SignUpFragment : Fragment() {
             return false
         }
         val user = UserModel(username, email, password)
-        val isProcessCompleted = userDatabaseHelper.putUserData(user)
+        val isProcessCompleted = userDatabaseHelper.insertUserData(user)
         if (!isProcessCompleted) {
             showToast("Something went wrong...", true)
             return isProcessCompleted
@@ -94,8 +95,8 @@ class SignUpFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        _binding = null
         super.onDestroyView()
-        binding = null
     }
 
     private fun showToast(text: String, isLong: Boolean = false) {

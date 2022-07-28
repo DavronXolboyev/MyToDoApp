@@ -30,5 +30,11 @@
     <string name="clear_all_to_dos">Clear all to-dos</string>
     <string name="log_out">Log out of profile</string>
     <string name="v_1_0_0">v.1.0.0</string>
+    <string name="card_number">Card number</string>
+    <string name="card_data">Validity period</string>
+    <string name="card_name">Card name</string>
+    <string name="card_balance">Card Balance - UZS</string>
+    <string name="create_a_card">Create a card</string>
+    <string name="card_registration">Card registration</string>
 
 </resources>
