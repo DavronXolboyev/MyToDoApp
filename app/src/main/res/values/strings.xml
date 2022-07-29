@@ -36,5 +36,10 @@
     <string name="card_balance">Card Balance - UZS</string>
     <string name="create_a_card">Create a card</string>
     <string name="card_registration">Card registration</string>
+    <string name="event">Event</string>
+    <string name="event_cost">Event cost</string>
+    <string name="export">Export</string>
+    <string name="_import">Import</string>
+    <string name="save">Save</string>
 
 </resources>

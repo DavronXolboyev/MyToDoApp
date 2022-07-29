@@ -7,6 +7,7 @@ data class CardModel(
     val cardNumber: String,
     val cardDate: String,
     val cardType: String,
-    val userId : Int,
-    val cardStyle : CardStyle
+    val userId: Int,
+    val cardStyle: CardStyle,
+    val cardExpenses: Float = 0f
 )

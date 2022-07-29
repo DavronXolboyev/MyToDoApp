@@ -16,10 +16,11 @@ class DbConstants {
                 "${Cards.CARD_NUMBER} TEXT NOT NULL UNIQUE," +
                 "${Cards.CARD_DATE} TEXT NOT NULL," +
                 "${Cards.CARD_NAME} TEXT NOT NULL," +
-                "${Cards.CARD_BALANCE} TEXT NOT NULL," +
+                "${Cards.CARD_BALANCE} FLOAT NOT NULL," +
                 "${Cards.CARD_TYPE} TEXT NOT NULL," +
                 "${Cards.USER_ID} INTEGER NOT NULL," +
                 "${Cards.CARD_STYLE_ID} INTEGER NOT NULL," +
+                "${Cards.CARD_EXPENSES} FLOAT NOT NULL DEFAULT 0," +
                 "FOREIGN KEY(${Cards.USER_ID}) REFERENCES ${User.TABLE_NAME}(${User.ID})" +
                 ")"
 
@@ -30,6 +31,7 @@ class DbConstants {
                     "${FinancialTransactions.ADDED_TIME} DATE NOT NULL," +
                     "${FinancialTransactions.USER_ID} INTEGER," +
                     "${FinancialTransactions.CARD_ID} INTEGER," +
+                    "${FinancialTransactions.EVENT_NAME} TEXT NOT NULL," +
                     "FOREIGN KEY(${FinancialTransactions.CARD_ID}) REFERENCES ${Cards.TABLE_NAME}(${Cards.ID})," +
                     "FOREIGN KEY(${FinancialTransactions.USER_ID}) REFERENCES ${User.TABLE_NAME}(${User.ID})" +
                     ")"
@@ -70,6 +72,7 @@ class DbConstants {
         val BALANCE_TYPE = "balance_type"
         val ADDED_TIME = "added_time"
         val CARD_ID = "card_id"
+        val EVENT_NAME = "event_name"
     }
 
     object Cards {
@@ -82,6 +85,7 @@ class DbConstants {
         val CARD_TYPE = "card_type"
         val USER_ID = "user_id"
         val CARD_STYLE_ID = "card_style_id"
+        val CARD_EXPENSES = "card_expenses"
     }
 
     object Preference {

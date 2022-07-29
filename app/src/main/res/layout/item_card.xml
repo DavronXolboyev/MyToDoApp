@@ -34,8 +34,7 @@
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/icon_humo" />
+            android:src="@drawable/humo1" />
 
         <TextView
             android:id="@+id/item_card_balance"

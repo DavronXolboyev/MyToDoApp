@@ -5,5 +5,7 @@ data class FinTranModel(
     val eventCost: Float,
     val userId: Int,
     val addedTime: String,
-    val cardId: Int
+    val cardId: Int,
+    var viewType : Int,
+    val eventName : String,
 )

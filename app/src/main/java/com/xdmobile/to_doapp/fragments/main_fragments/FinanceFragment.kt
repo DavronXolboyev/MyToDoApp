@@ -1,5 +1,7 @@
 package com.xdmobile.to_doapp.fragments.main_fragments
 
+import android.app.AlertDialog
+import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.os.Build
@@ -12,12 +14,18 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import com.xdmobile.to_doapp.R
+import com.xdmobile.to_doapp.adapter.CardViewPagerAdapter
+import com.xdmobile.to_doapp.adapter.TransactionsRecyclerAdapter
+import com.xdmobile.to_doapp.constants.CardBackground
+import com.xdmobile.to_doapp.constants.Tools
+import com.xdmobile.to_doapp.database.CardDatabaseHelper
+import com.xdmobile.to_doapp.database.DbConstants
 import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentFincanceBinding
+import com.xdmobile.to_doapp.model.CardModel
 import com.xdmobile.to_doapp.model.FinTranModel
 import java.time.LocalDate
 import java.time.Month
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 class FinanceFragment : Fragment() {
@@ -25,20 +33,60 @@ class FinanceFragment : Fragment() {
     private var _binding: FragmentFincanceBinding? = null
     private val binding: FragmentFincanceBinding get() = _binding!!
     private lateinit var financeDatabaseHelper: FinanceDatabaseHelper
-    private val finTranModelList = mutableListOf<FinTranModel>()
+    private lateinit var cardsDatabaseHelper: CardDatabaseHelper
+    private var finTranModelList = mutableListOf<FinTranModel>()
+    private val cardsList = mutableListOf<CardModel>()
+    private var userId: Int = -1
+    private var cardId: Int = -1
+    private var transactionsRecyclerAdapter: TransactionsRecyclerAdapter? = null
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        userId = activity?.getSharedPreferences(DbConstants.Preference.NAME, Context.MODE_PRIVATE)!!
+            .getInt(DbConstants.Preference.KEY_USER_ID, -1)
 
         _binding = FragmentFincanceBinding.inflate(inflater)
         financeDatabaseHelper = FinanceDatabaseHelper(requireContext())
+        cardsDatabaseHelper = CardDatabaseHelper(requireContext())
 
         binding.buttonWeek.isChecked = true
 
-        binding.financeRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+        initListeners()
+
+        initCardsList()
+
+        val cardViewPagerAdapter = CardViewPagerAdapter(requireContext(), cardsList)
+        binding.financeViewPager2.adapter = cardViewPagerAdapter
+        transactionsRecyclerAdapter =
+            TransactionsRecyclerAdapter(requireContext(), finTranModelList)
+        binding.financeRecyclerView.adapter = transactionsRecyclerAdapter
+
+        return binding.root
+    }
+
+    private fun initCardsList() {
+        val cursor = cardsDatabaseHelper.getAllCardsCursor(userId)
+        while (cursor.moveToNext()) {
+            val cardModel = CardModel(
+                id = cursor.getInt(0),
+                cardNumber = cursor.getString(1),
+                cardDate = cursor.getString(2),
+                cardName = cursor.getString(3),
+                cardBalance = cursor.getFloat(4),
+                cardType = cursor.getString(5),
+                userId = cursor.getInt(6),
+                cardStyle = CardBackground().getCardStyleById(cursor.getInt(7)),
+                cardExpenses = cursor.getFloat(8)
+            )
+            cardsList.add(cardModel)
+        }
+    }
+
+    private fun initListeners() {
+        binding.financeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             run {
                 when (checkedId) {
                     R.id.button_week -> filterDateWithWeek()
@@ -55,19 +103,19 @@ class FinanceFragment : Fragment() {
         binding.financeCard.setOnClickListener {
             openCardsFragment()
         }
-
-        return binding.root
     }
 
     private fun filterDateWithYear() {
+        cardId = cardsList[binding.financeViewPager2.currentItem].id
         Log.i("TAG", "filterDateWithYear: isWorked")
         finTranModelList.clear()
+        transactionsRecyclerAdapter?.notifyItemRangeRemoved(0, finTranModelList.size)
         val localDate = LocalDate.now()
         val year = localDate.year - 1
         val endDate = localDate.toString()
         val startDate = "${year}${endDate.substring(4)}"
         try {
-            val cursor = financeDatabaseHelper.getFilteredDate(startDate, endDate)
+            val cursor = financeDatabaseHelper.getFilteredDate(startDate, endDate, cardId)
             initDataToList(cursor)
         } catch (e: SQLiteException) {
             e.stackTrace
@@ -75,7 +123,9 @@ class FinanceFragment : Fragment() {
     }
 
     private fun filterDateWithMonth() {
+        cardId = cardsList[binding.financeViewPager2.currentItem].id
         finTranModelList.clear()
+        transactionsRecyclerAdapter?.notifyItemRangeRemoved(0, finTranModelList.size)
         Log.i("TAG", "filterDateWithMonth: isWorked")
         val localDate = LocalDate.now()
         var month = localDate.monthValue - 1
@@ -99,7 +149,7 @@ class FinanceFragment : Fragment() {
 
 
         try {
-            val cursor = financeDatabaseHelper.getFilteredDate(startDate, endDate)
+            val cursor = financeDatabaseHelper.getFilteredDate(startDate, endDate, cardId)
             initDataToList(cursor)
         } catch (e: SQLiteException) {
             e.stackTrace
@@ -107,8 +157,10 @@ class FinanceFragment : Fragment() {
     }
 
     private fun filterDateWithWeek() {
+        cardId = cardsList[binding.financeViewPager2.currentItem].id
         Log.i("TAG", "filterDateWithWeek: isWorked")
         finTranModelList.clear()
+        transactionsRecyclerAdapter?.notifyItemRangeRemoved(0, finTranModelList.size)
         val localDate = LocalDate.now()
         val currentDayInNumber = localDate.dayOfMonth
         val endDate = localDate.toString()
@@ -127,7 +179,7 @@ class FinanceFragment : Fragment() {
         }
 
         try {
-            val cursor = financeDatabaseHelper.getFilteredDate(startDate, endDate)
+            val cursor = financeDatabaseHelper.getFilteredDate(startDate, endDate, cardId)
             initDataToList(cursor)
         } catch (e: SQLiteException) {
             e.stackTrace
@@ -138,11 +190,20 @@ class FinanceFragment : Fragment() {
         if (cursor.count > 0) {
             while (cursor.moveToNext()) {
                 with(cursor) {
-                    // TODO: Bazadan ma'lumot olish
-//                    finTranModelList.add(finTranModel)
+                    val finTranModel = FinTranModel(
+                        id = getInt(0),
+                        eventCost = getFloat(1),
+                        addedTime = getString(2),
+                        userId = getInt(3),
+                        cardId = getInt(4),
+                        viewType = 1,
+                        eventName = getString(5)
+                    )
+                    finTranModelList.add(finTranModel)
                 }
             }
-            TODO("Adapter notify")
+            finTranModelList = Tools.getTransactionsWithType(finTranModelList)
+
         }
     }
 
@@ -152,6 +213,12 @@ class FinanceFragment : Fragment() {
 
     private fun showEventDialog() {
 //        TODO("Hodisa qo'shishi uchun dialog chiqarsin")
+        cardId = cardsList[binding.financeViewPager2.currentItem].id
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_create_event, null)
+        val builder = AlertDialog.Builder(requireContext()).apply {
+            setView(view)
+        }
+        builder.create().show()
     }
 
     override fun onDestroyView() {

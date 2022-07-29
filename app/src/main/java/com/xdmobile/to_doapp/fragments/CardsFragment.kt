@@ -45,21 +45,17 @@ class CardsFragment : Fragment() {
 
 
         try {
-            val cursor = preferences?.let {
-                cardDatabaseHelper.getAllCardsCursor(
-                    it.getInt(
-                        DbConstants.Preference.KEY_USER_ID,
-                        -1
-                    )
+            val cursor = cardDatabaseHelper.getAllCardsCursor(
+                preferences!!.getInt(
+                    DbConstants.Preference.KEY_USER_ID,
+                    -1
                 )
-            }
+            )
 
-            if (cursor!!.count < 1) {
-                binding.cardRecyclerview.visibility = View.GONE
-                binding.imageEmptyCard.visibility = View.VISIBLE
+            if (cursor.count < 1) {
+                setVisibility()
             } else {
-                binding.cardRecyclerview.visibility = View.VISIBLE
-                binding.imageEmptyCard.visibility = View.GONE
+                setVisibility(true)
                 initDataToList(cursor)
                 cardRecyclerAdapter = CardRecyclerAdapter(requireContext(), cardsList)
                 binding.cardRecyclerview.adapter = cardRecyclerAdapter!!
@@ -89,27 +85,6 @@ class CardsFragment : Fragment() {
         val cardBalanceEditText = dialogView.findViewById<EditText>(R.id.dialog_card_balance)
         val cardDateEditText = dialogView.findViewById<EditText>(R.id.dialog_card_date)
         val createCardButton = dialogView.findViewById<Button>(R.id.dialog_create_card_button)
-        val numberRgx = "[0-9]+"
-
-        cardNumberEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun afterTextChanged(s: Editable?) {
-                val length = s?.length
-                if (length == 4 || length == 9 || length == 14) {
-                    s.append(" ")
-                }
-            }
-        })
-
 
         createCardButton.setOnClickListener {
             val cardNumber = cardNumberEditText.text.toString().trim()
@@ -148,7 +123,13 @@ class CardsFragment : Fragment() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 cardsList.add(cardModel)
-                                cardRecyclerAdapter?.notifyItemInserted(cardsList.size - 1)
+                                if (cardsList.size == 1) {
+                                    setVisibility(true)
+                                    cardRecyclerAdapter =
+                                        CardRecyclerAdapter(requireContext(), cardsList)
+                                    binding.cardRecyclerview.adapter = cardRecyclerAdapter
+                                } else
+                                    cardRecyclerAdapter?.notifyItemInserted(cardsList.size - 1)
                             } else {
                                 Toast.makeText(
                                     requireContext(),
@@ -190,9 +171,20 @@ class CardsFragment : Fragment() {
                 cardBalance = cursor.getFloat(4),
                 cardType = cursor.getString(5),
                 userId = cursor.getInt(6),
-                cardStyle = CardBackground().getCardStyleById(cursor.getInt(7))
+                cardStyle = CardBackground().getCardStyleById(cursor.getInt(7)),
+                cardExpenses = cursor.getFloat(8)
             )
             cardsList.add(cardModel)
+        }
+    }
+
+    private fun setVisibility(isVisible: Boolean = false) {
+        if (isVisible) {
+            binding.cardRecyclerview.visibility = View.VISIBLE
+            binding.imageEmptyCard.visibility = View.GONE
+        } else {
+            binding.cardRecyclerview.visibility = View.GONE
+            binding.imageEmptyCard.visibility = View.VISIBLE
         }
     }
 

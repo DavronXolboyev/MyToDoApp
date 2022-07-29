@@ -29,6 +29,7 @@ class FinanceDatabaseHelper(context: Context) :
                 put(FinancialTransactions.USER_ID, userId)
                 put(FinancialTransactions.ADDED_TIME, addedTime)
                 put(FinancialTransactions.CARD_ID, cardId)
+                put(FinancialTransactions.EVENT_NAME,eventName)
             }
         }
 
@@ -40,12 +41,9 @@ class FinanceDatabaseHelper(context: Context) :
     fun getDataCursor(cardId: String): Cursor {
         val db = this.readableDatabase
         val query =
-            "SELECT * FROM ${FinancialTransactions.TABLE_NAME} WHERE ${FinancialTransactions.CARD_ID} = ? ORDER BY ${FinancialTransactions.ADDED_TIME} ASC"
-        val cursor = db.rawQuery(query, arrayOf(cardId))
+            "SELECT * FROM ${FinancialTransactions.TABLE_NAME} WHERE ${FinancialTransactions.CARD_ID} = ? ORDER BY ${FinancialTransactions.ADDED_TIME} DESC"
 
-//        db.close()
-
-        return cursor
+        return db.rawQuery(query, arrayOf(cardId))
     }
 
     fun deleteRow(id: Int): Boolean {
@@ -58,13 +56,14 @@ class FinanceDatabaseHelper(context: Context) :
         return isDeleted != -1
     }
 
-    fun deleteRowsWithCardId(cardId: Int) {
+    fun deleteRowsWithCardId(cardId: Int): Boolean {
         val db = this.writableDatabase
         val isDeletedRows = db.delete(
             FinancialTransactions.TABLE_NAME, "${FinancialTransactions.CARD_ID} = ?",
             arrayOf(cardId.toString())
         )
-//        db.close()
+
+        return isDeletedRows != -1
     }
 
     fun deleteAllDataWithUserId(userId: Int): Boolean {
@@ -77,22 +76,19 @@ class FinanceDatabaseHelper(context: Context) :
         return isDeleted != -1
     }
 
-    fun getFilteredDate(startDate: String, endDate: String): Cursor {
+    fun getFilteredDate(startDate: String, endDate: String, cardId: Int): Cursor {
         val db = readableDatabase
         val query = "SELECT * FROM ${FinancialTransactions.TABLE_NAME} " +
-                "WHERE ${FinancialTransactions.ADDED_TIME} BETWEEN ? AND ?"
-        val cursor = db.rawQuery(query, arrayOf(startDate, endDate))
-//        db.close()
-        return cursor
+                    "WHERE ${FinancialTransactions.CARD_ID} = ? AND ${FinancialTransactions.ADDED_TIME} " +
+                    "BETWEEN ? AND ? ORDER BY ${FinancialTransactions.ADDED_TIME} DESC"
+        return db.rawQuery(query, arrayOf(cardId.toString(), startDate, endDate))
     }
 
     fun getCardsCursor(userId: Int): Cursor {
         val db = this.readableDatabase
         val query =
             "SELECT * FROM ${FinancialTransactions.TABLE_NAME} WHERE ${FinancialTransactions.USER_ID} = ?"
-        val cursor = db.rawQuery(query, arrayOf(userId.toString()))
-//        db.close()
-        return cursor
+        return db.rawQuery(query, arrayOf(userId.toString()))
     }
 
 }

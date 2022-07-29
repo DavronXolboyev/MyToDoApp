@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/inter_semi_bold"
+        android:text="@string/event"
+        android:textColor="@color/text_color"
+        android:textSize="24sp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv1"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp">
+
+        <EditText
+            android:id="@+id/dialog_event_cost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/inter"
+            android:hint="@string/event_cost"
+            android:inputType="numberDecimal"
+            android:maxLength="15"
+            android:maxLines="1"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/text_color"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <RadioGroup
+        android:id="@+id/dialog_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card5"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginVertical="8dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/dialog_button_export"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_background_filter"
+            android:button="@drawable/ic_export"
+            android:buttonTint="@color/red"
+            android:text="@string/export"
+            android:textColor="@color/text_filter_button"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/dialog_button_import"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_background_filter"
+            android:button="@drawable/ic_import"
+            android:buttonTint="@color/green"
+            android:text="@string/_import"
+            android:textColor="@color/text_filter_button"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/dialog_event_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_radio_group"
+        android:layout_marginHorizontal="4dp"
+        android:text="@string/save" />
+
+</RelativeLayout>

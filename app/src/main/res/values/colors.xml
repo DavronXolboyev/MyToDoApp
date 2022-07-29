@@ -15,9 +15,14 @@
     <color name="apple_button_color">#535566</color>
     <color name="facebook_button_color">#3B5998</color>
     <color name="twitter_button_color">#4385F4</color>
-    <color name="green">#00990F</color>
-    <color name="red">#8B0101</color>
+    <color name="green">#00FF22</color>
+    <color name="red">#FF0000</color>
 
     <color name="gold">#FFEB3B</color>
     <color name="stratos">#090057</color>
+    <color name="green_light">#3EE402</color>
+    <color name="orange">#FF5722</color>
+    <color name="pink">#E91E63</color>
+    <color name="purple">#B004CD</color>
+    <color name="blue">#00BCD4</color>
 </resources>
