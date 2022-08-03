@@ -96,5 +96,4 @@ class DbConstants {
         const val KEY_CARD_ID = "card_id"
     }
 
-
 }

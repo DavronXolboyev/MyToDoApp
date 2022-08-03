@@ -2,7 +2,6 @@ package com.xdmobile.to_doapp.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.xdmobile.to_doapp.R
 import com.xdmobile.to_doapp.constants.Tools
+import com.xdmobile.to_doapp.interfaces.CardOnLongClickListener
 import com.xdmobile.to_doapp.model.CardModel
-import java.lang.StringBuilder
 
 class CardRecyclerAdapter(
     private val context: Context,
@@ -69,13 +68,10 @@ class CardRecyclerAdapter(
         return cardList.size
     }
 
-    private var onLongClickListener: OnLongClickListener? = null
+    private var onLongClickListener: CardOnLongClickListener? = null
 
-    fun setOnLongClickListener(listener: OnLongClickListener) {
+    fun setOnLongClickListener(listener: CardOnLongClickListener) {
         onLongClickListener = listener
     }
 
-    interface OnLongClickListener {
-        fun onLongClick(position: Int, view: View)
-    }
 }

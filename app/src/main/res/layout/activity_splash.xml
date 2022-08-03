@@ -7,15 +7,39 @@
     android:background="@color/text_color"
     tools:context=".activities.SplashActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:layout_centerInParent="true"
-        android:fontFamily="@font/inter_semi_bold"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="40sp" />
-
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:fontFamily="@font/inter_semi_bold"
+            android:text="This is"
+            />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gold"
+            android:textSize="32sp"
+            android:text="Funds monitoring"
+            android:fontFamily="@font/inter_semi_bold"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:fontFamily="@font/inter_semi_bold"
+            android:text="app"
+            />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

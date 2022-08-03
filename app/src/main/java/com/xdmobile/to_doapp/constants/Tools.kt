@@ -21,8 +21,7 @@ class Tools {
             if (finTranModel.addedTime == currentDay) {
                 newList.add(FinTranModel(0, 0f, 0, "Today", 0, VIEW_TYPE_GROUP, ""))
             } else {
-                finTranModel.viewType = VIEW_TYPE_GROUP
-                newList.add(finTranModel)
+                newList.add(FinTranModel(0, 0f, 0, finTranModel.addedTime, 0, VIEW_TYPE_GROUP, ""))
             }
 
             for (i in 0 until transactionsList.lastIndex) {

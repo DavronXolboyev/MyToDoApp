@@ -44,12 +44,12 @@
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/drawable/item_style_top.xml" value="0.1815" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/drawable/login_button.xml" value="0.1815" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout-xhdpi/item_card_v.xml" value="0.1641025641025641" />
-        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/activity_main.xml" value="0.16" />
-        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/activity_splash.xml" value="0.25" />
+        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/activity_splash.xml" value="0.22" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/activity_welcome.xml" value="0.2" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/dialog_create_card.xml" value="0.22" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/dialog_create_event.xml" value="0.22" />
-        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_calendar.xml" value="0.2" />
+        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_calendar.xml" value="0.25" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_cards.xml" value="0.16" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_edit_card.xml" value="0.16" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_fincance.xml" value="0.22" />
@@ -58,13 +58,14 @@
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_sign_in.xml" value="0.25" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_sign_up.xml" value="0.33" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/fragment_to_do_list.xml" value="0.2" />
+        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_calendar_day.xml" value="0.2" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_card.xml" value="0.2" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_card_v.xml" value="0.16324786324786325" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_finance.xml" value="0.25" />
-        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_finance_day.xml" value="0.2" />
+        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_finance_day.xml" value="0.5" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_financial_transactions.xml" value="0.25" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_rings.xml" value="0.19895833333333332" />
-        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_to_do.xml" value="0.2" />
+        <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/layout/item_to_do.xml" value="0.5" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/menu/bottom_menu.xml" value="0.2" />
         <entry key="..\:/Telegram_Downloads/To-Do App/ToDoApp2/app/src/main/res/menu/popup_menu_card.xml" value="0.33" />
       </map>

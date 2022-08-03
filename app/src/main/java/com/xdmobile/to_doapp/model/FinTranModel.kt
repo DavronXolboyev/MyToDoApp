@@ -6,6 +6,6 @@ data class FinTranModel(
     val userId: Int,
     val addedTime: String,
     val cardId: Int,
-    var viewType : Int,
-    val eventName : String,
+    var viewType: Int,
+    val eventName: String,
 )

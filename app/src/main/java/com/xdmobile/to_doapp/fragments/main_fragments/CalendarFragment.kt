@@ -1,60 +1,95 @@
 package com.xdmobile.to_doapp.fragments.main_fragments
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import com.xdmobile.to_doapp.R
+import com.xdmobile.to_doapp.adapter.CalendarDaysAdapter
+import com.xdmobile.to_doapp.databinding.FragmentCalendarBinding
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@RequiresApi(Build.VERSION_CODES.O)
 class CalendarFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentCalendarBinding? = null
+    private val binding: FragmentCalendarBinding get() = _binding!!
+    private lateinit var selectedDate: LocalDate
+    private var daysInMonthArray: ArrayList<String> = arrayListOf()
+    private var calendarDaysAdapter: CalendarDaysAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+        _binding = FragmentCalendarBinding.inflate(inflater)
+        selectedDate = LocalDate.now()
+
+        binding.nextMonth.setOnClickListener {
+            nextMonthAction()
+        }
+        binding.previousMonth.setOnClickListener {
+            previousMonthAction()
+        }
+        setMonthView()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CalendarFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
+    private fun setMonthView() {
+        binding.monthYearText.text = monthYearFromDate(selectedDate);
+        getDaysInMonthArray(selectedDate);
+        if (calendarDaysAdapter == null) {
+            calendarDaysAdapter = CalendarDaysAdapter(requireContext(), daysInMonthArray)
+            binding.calendarRv.adapter = calendarDaysAdapter
+        } else {
+            calendarDaysAdapter?.notifyItemRangeRemoved(0, daysInMonthArray.size)
+            calendarDaysAdapter?.notifyItemInserted(0)
+        }
+    }
+
+    private fun getDaysInMonthArray(date: LocalDate){
+//        val date = LocalDate.parse("2022-09-08")
+        daysInMonthArray.clear()
+        val yearMonth = YearMonth.from(date)
+
+        val daysInMonth = yearMonth.lengthOfMonth()
+//        println("daysInMonth = $daysInMonth")
+
+        val firstOfMonth: LocalDate = date.withDayOfMonth(1)
+//        println("firstOfMonth = $firstOfMonth")
+
+        val dayOfWeek = firstOfMonth.dayOfWeek.value
+//        println("dayOfWeek = $dayOfWeek")
+
+
+        for (i in 1..42) {
+            if (i < dayOfWeek || i >= daysInMonth + dayOfWeek) {
+                daysInMonthArray.add("")
+            } else {
+                daysInMonthArray.add((i - dayOfWeek + 1).toString())
             }
+        }
+
+    }
+
+    private fun monthYearFromDate(date: LocalDate): String {
+        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+        return date.format(formatter);
+    }
+
+    private fun previousMonthAction() {
+        selectedDate = selectedDate.minusMonths(1)
+        setMonthView()
+    }
+
+    private fun nextMonthAction() {
+        selectedDate = selectedDate.plusMonths(1)
+        setMonthView()
     }
 }

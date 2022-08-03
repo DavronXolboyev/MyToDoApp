@@ -21,15 +21,5 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
-
-        val email = getSharedPreferences(
-            DbConstants.Preference.NAME,
-            MODE_PRIVATE
-        ).getString(DbConstants.Preference.KEY_EMAIL_OR_USERNAME, "")
-
-        val id = UserDatabaseHelper(this).getUserID(email!!)
-
-        Toast.makeText(applicationContext, "$email || $id", Toast.LENGTH_LONG).show()
-
     }
 }

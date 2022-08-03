@@ -46,5 +46,5 @@
     <string name="edit_card">Edit card</string>
     <string name="delete_card">Delete</string>
     <string name="all">All</string>
-
+    <string name="test"><del>Test</del></string>
 </resources>

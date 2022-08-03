@@ -27,10 +27,11 @@ import com.xdmobile.to_doapp.database.CardDatabaseHelper
 import com.xdmobile.to_doapp.database.DbConstants
 import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentCardsBinding
+import com.xdmobile.to_doapp.interfaces.CardOnLongClickListener
 import com.xdmobile.to_doapp.model.CardModel
 import org.w3c.dom.Text
 
-class CardsFragment : Fragment(), CardRecyclerAdapter.OnLongClickListener {
+class CardsFragment : Fragment(), CardOnLongClickListener {
 
     private var _binding: FragmentCardsBinding? = null
     private val binding: FragmentCardsBinding get() = _binding!!
