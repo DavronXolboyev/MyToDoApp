@@ -3,6 +3,7 @@ package com.xdmobile.to_doapp.fragments
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
@@ -11,20 +12,25 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
+import androidx.navigation.fragment.findNavController
 import com.xdmobile.to_doapp.R
 import com.xdmobile.to_doapp.adapter.CardRecyclerAdapter
 import com.xdmobile.to_doapp.constants.CardBackground
 import com.xdmobile.to_doapp.database.CardDatabaseHelper
 import com.xdmobile.to_doapp.database.DbConstants
+import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentCardsBinding
 import com.xdmobile.to_doapp.model.CardModel
+import org.w3c.dom.Text
 
-class CardsFragment : Fragment() {
+class CardsFragment : Fragment(), CardRecyclerAdapter.OnLongClickListener {
 
     private var _binding: FragmentCardsBinding? = null
     private val binding: FragmentCardsBinding get() = _binding!!
@@ -59,6 +65,7 @@ class CardsFragment : Fragment() {
                 initDataToList(cursor)
                 cardRecyclerAdapter = CardRecyclerAdapter(requireContext(), cardsList)
                 binding.cardRecyclerview.adapter = cardRecyclerAdapter!!
+                cardRecyclerAdapter?.setOnLongClickListener(this)
             }
         } catch (e: SQLiteException) {
             e.stackTrace
@@ -86,9 +93,27 @@ class CardsFragment : Fragment() {
         val cardDateEditText = dialogView.findViewById<EditText>(R.id.dialog_card_date)
         val createCardButton = dialogView.findViewById<Button>(R.id.dialog_create_card_button)
 
+        cardBalanceEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (cardBalanceEditText.text.toString().startsWith("0")
+                    && cardBalanceEditText.text.length > 1
+                ) {
+
+                    cardBalanceEditText.setText("0");
+                    cardBalanceEditText.setSelection(cardBalanceEditText.text.toString().length);
+                }
+            }
+        })
+
         createCardButton.setOnClickListener {
             val cardNumber = cardNumberEditText.text.toString().trim()
-            if (cardNumber.isNotEmpty()) {
+            if (cardNumber.length == 16) {
                 val cardName = cardNameEditText.text.toString().trim()
                 if (cardName.isNotEmpty()) {
                     val cardDate = cardDateEditText.text.toString().trim()
@@ -188,4 +213,53 @@ class CardsFragment : Fragment() {
         }
     }
 
+    override fun onLongClick(position: Int, view: View) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.popup_menu_card, popupMenu.menu)
+        popupMenu.setForceShowIcon(true)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.popup_menu_edit_card -> {
+                    openEditCardGFragment(position)
+                }
+                R.id.popup_menu_delete_card -> {
+                    showAlertDialog(position)
+                }
+            }
+            true
+        }
+        popupMenu.show()
+    }
+
+    private fun openEditCardGFragment(position: Int) {
+        val bundle = Bundle()
+        bundle.putInt(DbConstants.Preference.KEY_CARD_ID, cardsList[position].id)
+        findNavController().navigate(R.id.action_cardsFragment_to_editCardFragment, bundle)
+    }
+
+    private fun showAlertDialog(position: Int) {
+        val builder = AlertDialog.Builder(requireContext())
+            .setIcon(R.drawable.ic_baseline_delete_24)
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to delete the card?")
+            .setPositiveButton(
+                "Yes"
+            ) { dialog, _ ->
+                val ftDb = FinanceDatabaseHelper(requireContext())
+                if (cardDatabaseHelper.deleteCard(cardsList[position].id) && ftDb.deleteRow(
+                        cardsList[position].id
+                    )
+                ) {
+                    cardsList.removeAt(position)
+                    cardRecyclerAdapter?.notifyItemRemoved(position)
+                    Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                dialog?.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog?.dismiss()
+            }
+        builder.create().show()
+    }
 }

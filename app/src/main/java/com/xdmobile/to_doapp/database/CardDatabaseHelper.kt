@@ -50,6 +50,7 @@ class CardDatabaseHelper(context: Context) :
                 put(Cards.CARD_TYPE, cardType)
                 put(Cards.USER_ID, userId)
                 put(Cards.CARD_STYLE_ID, cardStyle.id)
+                put(Cards.CARD_EXPENSES, cardExpenses)
             }
         }
         val isUpdated = db.update(
@@ -67,16 +68,35 @@ class CardDatabaseHelper(context: Context) :
         return isDeleted != -1
     }
 
+    fun deleteAllCardsWithUserId(userId: Int): Boolean {
+        val db = this.writableDatabase
+        val isDeleted =
+            db.delete(Cards.TABLE_NAME, "${Cards.USER_ID} = ?", arrayOf(userId.toString()))
+
+        return isDeleted != -1
+    }
+
+    fun getCardBalance(cardId: Int): Float {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT ${Cards.CARD_BALANCE} FROM ${Cards.TABLE_NAME} WHERE ${Cards.ID} = ?",
+            arrayOf(cardId.toString())
+        )
+        cursor.moveToNext()
+
+        return cursor.getFloat(0)
+    }
+
     fun getAllCardsCursor(userId: Int): Cursor {
         val db = this.readableDatabase
         val query = "SELECT * FROM ${Cards.TABLE_NAME} WHERE ${Cards.USER_ID} = ?"
         return db.rawQuery(query, arrayOf(userId.toString()))
     }
 
-    fun getCard(cardNumber: String): CardModel? {
+    fun getCard(cardId: Int): CardModel? {
         val db = this.readableDatabase
-        val query = "SELECT * FROM ${Cards.TABLE_NAME} WHERE ${Cards.CARD_NAME} = ?"
-        val cursor = db.rawQuery(query, arrayOf(cardNumber))
+        val query = "SELECT * FROM ${Cards.TABLE_NAME} WHERE ${Cards.ID} = ?"
+        val cursor = db.rawQuery(query, arrayOf(cardId.toString()))
         if (cursor.moveToNext()) {
             db.close()
             return CardModel(
@@ -94,7 +114,7 @@ class CardDatabaseHelper(context: Context) :
         return null
     }
 
-    fun getOldCost(cardId: Int): Float {
+    private fun getOldCost(cardId: Int): Float {
         val db = this.readableDatabase
         val query = "SELECT ${Cards.CARD_EXPENSES} FROM ${Cards.TABLE_NAME} WHERE ${Cards.ID} = ?"
         val cursor = db.rawQuery(query, arrayOf(cardId.toString()))
@@ -116,6 +136,21 @@ class CardDatabaseHelper(context: Context) :
         )
 
         return isTheCostAdded != -1
+    }
+
+    fun updateCardStyle(cardId: Int,cardStyleId : Int) : Boolean{
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues().apply {
+            put(Cards.CARD_STYLE_ID, cardStyleId)
+        }
+        val isUpdated = db.update(
+            Cards.TABLE_NAME,
+            contentValues,
+            "${Cards.ID} = ?",
+            arrayOf(cardId.toString())
+        )
+        return isUpdated != -1
     }
 
 }

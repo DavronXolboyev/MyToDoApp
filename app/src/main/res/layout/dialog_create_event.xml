@@ -16,10 +16,37 @@
         android:textSize="24sp" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card5"
+        android:id="@+id/card6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv1"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp">
+
+        <EditText
+            android:id="@+id/dialog_event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/inter"
+            android:hint="@string/event_name"
+            android:inputType="text"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/text_color"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card6"
         android:layout_marginHorizontal="4dp"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="10dp"

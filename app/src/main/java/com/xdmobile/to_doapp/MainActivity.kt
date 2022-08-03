@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         val email = getSharedPreferences(
             DbConstants.Preference.NAME,
             MODE_PRIVATE
-        ).getString(DbConstants.Preference.KEY_EMAIL_OR_USENAME, "")
+        ).getString(DbConstants.Preference.KEY_EMAIL_OR_USERNAME, "")
 
         val id = UserDatabaseHelper(this).getUserID(email!!)
 

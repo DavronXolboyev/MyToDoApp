@@ -57,7 +57,7 @@ class CardViewPagerAdapter(
     }
 
     private fun stopAnimation(ringChart: RingChart) {
-        object : CountDownTimer(1500, 1000) {
+        object : CountDownTimer(1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
             }

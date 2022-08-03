@@ -12,14 +12,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.edit
 import com.xdmobile.to_doapp.activities.WelcomeActivity
-import com.xdmobile.to_doapp.database.DbConstants
+import com.xdmobile.to_doapp.database.CardDatabaseHelper
 import com.xdmobile.to_doapp.database.DbConstants.Preference
 import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.database.ToDoDatabaseHelper
 import com.xdmobile.to_doapp.database.UserDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentSettingsBinding
 import com.xdmobile.to_doapp.model.UserModel
-import java.util.prefs.Preferences
 
 class SettingsFragment : Fragment() {
 
@@ -27,7 +26,7 @@ class SettingsFragment : Fragment() {
     private val binding: FragmentSettingsBinding get() = _binding!!
     private var preferences: SharedPreferences? = null
     private val itsEmpty = "It's empty!"
-    private lateinit var userDatabaseHelper : UserDatabaseHelper
+    private lateinit var userDatabaseHelper: UserDatabaseHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +72,10 @@ class SettingsFragment : Fragment() {
             clearAllFinancialTransactions(userId!!)
         }
 
+        binding.settingsClearAllCards.setOnClickListener {
+            clearAllCards(userId!!)
+        }
+
         binding.settingsEditButton.setOnClickListener {
             setEnabledToViews(true)
         }
@@ -100,15 +103,23 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun clearAllCards(userId: Int) {
+        val cardDatabaseHelper = CardDatabaseHelper(requireContext())
+        if (cardDatabaseHelper.deleteAllCardsWithUserId(userId)) {
+            clearAllFinancialTransactions(userId)
+            showToast("All cards have been deleted!")
+        } else {
+            showToast("Something went wrong...", false)
+        }
+    }
+
     private fun clearAllFinancialTransactions(userId: Int) {
         try {
             val financeDatabaseHelper = FinanceDatabaseHelper(requireContext())
             if (financeDatabaseHelper.deleteAllDataWithUserId(userId)) {
-                Toast.makeText(requireContext(), "All to-dos have been deleted!", Toast.LENGTH_LONG)
-                    .show()
+                showToast("All to-dos have been deleted!")
             } else
-                Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG)
-                    .show()
+                showToast("Something went wrong...", false)
         } catch (e: SQLiteException) {
             e.stackTrace
         }
@@ -117,10 +128,9 @@ class SettingsFragment : Fragment() {
     private fun updateUserInfo(userId: Int, username: String, email: String, password: String) {
         val newUser = UserModel(userId, username, email, password)
         if (userDatabaseHelper.updateUserData(newUser)) {
-            Toast.makeText(requireContext(), "Information has been updated", Toast.LENGTH_LONG)
-                .show()
+            showToast("Information has been updated")
         } else {
-            Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG).show()
+            showToast("Something went wrong...", false)
         }
         saveToSharedPreference(username)
     }
@@ -132,7 +142,7 @@ class SettingsFragment : Fragment() {
                 Context.MODE_PRIVATE
             )
         sharedPreferences.edit().apply {
-            putString(Preference.KEY_EMAIL_OR_USENAME,username)
+            putString(Preference.KEY_EMAIL_OR_USERNAME, username)
             apply()
         }
     }
@@ -141,11 +151,9 @@ class SettingsFragment : Fragment() {
         try {
             val toDoDatabaseHelper = ToDoDatabaseHelper(requireContext())
             if (toDoDatabaseHelper.deleteAllToDos(userId)) {
-                Toast.makeText(requireContext(), "All to-dos have been deleted!", Toast.LENGTH_LONG)
-                    .show()
+                showToast("All to-dos have been deleted!")
             } else
-                Toast.makeText(requireContext(), "Something went wrong...", Toast.LENGTH_LONG)
-                    .show()
+                showToast("Something went wrong...", false)
         } catch (e: SQLiteException) {
             e.stackTrace
         }
@@ -165,6 +173,14 @@ class SettingsFragment : Fragment() {
         binding.settingsEmail.isEnabled = isEnabled
         binding.settingsPassword.isEnabled = isEnabled
         binding.settingsSaveButton.visibility = if (isEnabled) View.VISIBLE else View.GONE
+    }
+
+    private fun showToast(message: String, isShortTime: Boolean = true) {
+        Toast.makeText(
+            requireContext(),
+            message,
+            if (isShortTime) Toast.LENGTH_SHORT else Toast.LENGTH_LONG
+        ).show()
     }
 
     override fun onDestroyView() {

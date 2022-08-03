@@ -122,7 +122,7 @@ class SignUpFragment : Fragment() {
             val id = UserDatabaseHelper(requireContext()).getUserID(email)
             if (id != null)
                 putInt(DbConstants.Preference.KEY_USER_ID, id)
-            putString(DbConstants.Preference.KEY_EMAIL_OR_USENAME,email)
+            putString(DbConstants.Preference.KEY_EMAIL_OR_USERNAME,email)
             apply()
         }
 

@@ -58,6 +58,6 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_export" />
+        android:src="@drawable/ic_import" />
 
 </RelativeLayout>

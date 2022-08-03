@@ -56,7 +56,7 @@ class SignInFragment : Fragment() {
                     val id = UserDatabaseHelper(requireContext()).getUserID(emailOrUsername)
                     if (id != null)
                         editor.putInt(Preference.KEY_USER_ID, id)
-                    editor.putString(Preference.KEY_EMAIL_OR_USENAME, emailOrUsername)
+                    editor.putString(Preference.KEY_EMAIL_OR_USERNAME, emailOrUsername)
                     editor.apply()
 
                     startActivity(Intent(requireContext(), MainActivity::class.java))

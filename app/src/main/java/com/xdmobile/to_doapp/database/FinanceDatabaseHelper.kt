@@ -38,12 +38,12 @@ class FinanceDatabaseHelper(context: Context) :
         return isInserted != -1L
     }
 
-    fun getDataCursor(cardId: String): Cursor {
+    fun getDataCursor(cardId: Int): Cursor {
         val db = this.readableDatabase
         val query =
             "SELECT * FROM ${FinancialTransactions.TABLE_NAME} WHERE ${FinancialTransactions.CARD_ID} = ? ORDER BY ${FinancialTransactions.ADDED_TIME} DESC"
 
-        return db.rawQuery(query, arrayOf(cardId))
+        return db.rawQuery(query, arrayOf(cardId.toString()))
     }
 
     fun deleteRow(id: Int): Boolean {

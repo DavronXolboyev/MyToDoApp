@@ -41,5 +41,10 @@
     <string name="export">Export</string>
     <string name="_import">Import</string>
     <string name="save">Save</string>
+    <string name="event_name">Event name</string>
+    <string name="delete_all_cards">Delete all cards</string>
+    <string name="edit_card">Edit card</string>
+    <string name="delete_card">Delete</string>
+    <string name="all">All</string>
 
 </resources>

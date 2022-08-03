@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.xdmobile.to_doapp.R
+import com.xdmobile.to_doapp.constants.Tools
 import com.xdmobile.to_doapp.model.CardModel
 import java.lang.StringBuilder
 
@@ -21,7 +22,8 @@ class CardRecyclerAdapter(
 
     RecyclerView.Adapter<CardRecyclerAdapter.ViewHolder>() {
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         private val cardNumber = itemView.findViewById<TextView>(R.id.item_card_number)
         private val cardName = itemView.findViewById<TextView>(R.id.item_card_name)
         private val cardBalance = itemView.findViewById<TextView>(R.id.item_card_balance)
@@ -31,49 +33,29 @@ class CardRecyclerAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(position: Int) {
-            cardNumber.text = getFormattedCardNumber(cardList[position].cardNumber)
+            cardNumber.text = Tools.getFormattedCardNumber(cardList[position].cardNumber)
             cardNumber.setTextColor(context.resources.getColor(cardList[position].cardStyle.textColor))
 
             cardName.text = cardList[position].cardName
             cardName.setTextColor(context.resources.getColor(cardList[position].cardStyle.textColor))
-            val balance = cardList[position].cardBalance - cardList[position].cardExpenses
             cardBalance.text =
-                "${getFormattedCardBalance(balance)} UZS"
+                "${Tools.getFormattedCardBalance(cardList[position].cardBalance)} UZS"
             cardBalance.setTextColor(context.resources.getColor(cardList[position].cardStyle.textColor))
 
             cardDate.text = cardList[position].cardDate
             cardDate.setTextColor(context.resources.getColor(cardList[position].cardStyle.textColor))
 
-            cardIcon.setImageResource(
-                if (cardList[position].cardType == "HUMO")
-                    R.drawable.humo1
-                else
-                    R.drawable.uzcard1
-            )
+            cardIcon.setImageResource(Tools.getCardIcon(cardList[position].cardType))
+
             card.setBackgroundResource(cardList[position].cardStyle.gradient)
+            itemView.setOnLongClickListener {
+                if (position != RecyclerView.NO_POSITION)
+                    onLongClickListener?.onLongClick(adapterPosition, itemView)
+                false
+            }
         }
     }
 
-    private fun getFormattedCardBalance(balance: Float): String {
-        Log.i("TAG", "getFormattedCardBalance: $balance")
-        val s = balance.toLong().toString()
-        val builder = StringBuilder()
-        var counter = 0
-        for (i in s.lastIndex downTo 0) {
-            builder.append(s[i])
-            counter++
-            if (counter % 3 == 0 && counter != s.length)
-                builder.append(" ")
-        }
-        return builder.toString().reversed()
-    }
-
-    private fun getFormattedCardNumber(cardNumber: String): CharSequence {
-        return "${cardNumber.substring(0, 4)} " +
-                "${cardNumber.substring(4, 8)} " +
-                "${cardNumber.substring(8, 12)} " +
-                cardNumber.substring(12)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_card, parent, false))
@@ -85,5 +67,15 @@ class CardRecyclerAdapter(
 
     override fun getItemCount(): Int {
         return cardList.size
+    }
+
+    private var onLongClickListener: OnLongClickListener? = null
+
+    fun setOnLongClickListener(listener: OnLongClickListener) {
+        onLongClickListener = listener
+    }
+
+    interface OnLongClickListener {
+        fun onLongClick(position: Int, view: View)
     }
 }

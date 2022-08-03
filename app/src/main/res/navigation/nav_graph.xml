@@ -22,8 +22,7 @@
             app:exitAnim="@anim/slide_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out"
-            app:popUpTo="@id/financeFragment"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/cardsFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -39,5 +38,19 @@
         android:id="@+id/cardsFragment"
         android:name="com.xdmobile.to_doapp.fragments.CardsFragment"
         android:label="fragment_cards"
-        tools:layout="@layout/fragment_cards" />
+        tools:layout="@layout/fragment_cards" >
+        <action
+            android:id="@+id/action_cardsFragment_to_editCardFragment"
+            app:destination="@id/editCardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editCardFragment"
+        android:name="com.xdmobile.to_doapp.fragments.EditCardFragment"
+        android:label="fragment_edit_card"
+        tools:layout="@layout/fragment_edit_card" >
+        <action
+            android:id="@+id/action_editCardFragment_to_financeFragment"
+            app:destination="@id/financeFragment"
+            app:popUpTo="@id/financeFragment" />
+    </fragment>
 </navigation>

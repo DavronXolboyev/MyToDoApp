@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    tools:context=".fragments.EditCardFragment">
+
+    <FrameLayout
+        android:id="@+id/edit_card_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/inter_semi_bold"
+            android:gravity="center_vertical"
+            android:text="@string/edit_card"
+            android:textColor="@color/black"
+            android:textSize="28sp" />
+    </FrameLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/edit_card_viewpager2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/edit_card_app_bar"
+        android:layout_marginTop="16dp" />
+
+    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+        android:id="@+id/edit_card_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_card_viewpager2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="16dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_card_indicator"
+        android:layout_marginHorizontal="4dp"
+        app:cardCornerRadius="8dp">
+
+        <EditText
+            android:id="@+id/edit_card_name_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/inter"
+            android:hint="@string/card_name"
+            android:maxLength="14"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/text_color"
+            android:textSize="16sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/edit_card_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="4dp"
+        android:text="@string/save" />
+
+</RelativeLayout>
