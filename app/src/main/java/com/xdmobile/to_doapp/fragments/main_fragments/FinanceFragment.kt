@@ -28,6 +28,7 @@ import com.xdmobile.to_doapp.database.CardDatabaseHelper
 import com.xdmobile.to_doapp.database.DbConstants
 import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentFincanceBinding
+import com.xdmobile.to_doapp.fragments.base.BaseFragment
 import com.xdmobile.to_doapp.model.CardModel
 import com.xdmobile.to_doapp.model.FinTranModel
 import java.time.LocalDate
@@ -35,10 +36,8 @@ import java.time.Month
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
-class FinanceFragment : Fragment() {
+class FinanceFragment : BaseFragment<FragmentFincanceBinding>(FragmentFincanceBinding::inflate) {
 
-    private var _binding: FragmentFincanceBinding? = null
-    private val binding: FragmentFincanceBinding get() = _binding!!
     private lateinit var financeDatabaseHelper: FinanceDatabaseHelper
     private lateinit var cardsDatabaseHelper: CardDatabaseHelper
     private var finTranModelList = mutableListOf<FinTranModel>()
@@ -49,15 +48,15 @@ class FinanceFragment : Fragment() {
     private var cardViewPagerAdapter: CardViewPagerAdapter? = null
     private var filterType = 0
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUI()
+    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun initUI(){
         userId = activity?.getSharedPreferences(DbConstants.Preference.NAME, Context.MODE_PRIVATE)!!
             .getInt(DbConstants.Preference.KEY_USER_ID, -1)
 
-        _binding = FragmentFincanceBinding.inflate(inflater)
         financeDatabaseHelper = FinanceDatabaseHelper(requireContext())
         cardsDatabaseHelper = CardDatabaseHelper(requireContext())
 
@@ -68,8 +67,6 @@ class FinanceFragment : Fragment() {
 
         initListeners()
         binding.buttonAll.isChecked = true
-        Log.i("TAG", "onCreateView: $cardId")
-//        initFinTransactionsDataToList(financeDatabaseHelper.getDataCursor(cardId.toString()))
 
 
         binding.financeViewPager2.registerOnPageChangeCallback(object :
@@ -87,15 +84,13 @@ class FinanceFragment : Fragment() {
                     2 -> filterDateWithMonth()
                     3 -> filterDateWithYear()
                 }
-                binding.wormDotsIndicator.setDotIndicatorColor(resources.getColor(cardsList[position].cardStyle.lineColor))
+                binding.wormDotsIndicator.setDotIndicatorColor(resources.getColor(cardsList[position].cardStyle.lineColor1))
             }
         })
 
         transactionsRecyclerAdapter =
             TransactionsRecyclerAdapter(requireContext(), finTranModelList)
         binding.financeRecyclerView.adapter = transactionsRecyclerAdapter
-
-        return binding.root
     }
 
     private fun initCardsList() {
@@ -111,7 +106,8 @@ class FinanceFragment : Fragment() {
                 cardType = cursor.getString(5),
                 userId = cursor.getInt(6),
                 cardStyle = CardBackground().getCardStyleById(cursor.getInt(7)),
-                cardExpenses = cursor.getFloat(8)
+                cardExpenses = cursor.getFloat(8),
+                cardReceipts = cursor.getFloat(9)
             )
             cardsList.add(cardModel)
         }
@@ -121,7 +117,7 @@ class FinanceFragment : Fragment() {
         } else {
             binding.constraintLayout.visibility = View.VISIBLE
             binding.addEvent.visibility = View.VISIBLE
-            binding.wormDotsIndicator.setDotIndicatorColor(resources.getColor(cardsList[0].cardStyle.lineColor))
+            binding.wormDotsIndicator.setDotIndicatorColor(resources.getColor(cardsList[0].cardStyle.lineColor1))
         }
     }
 
@@ -350,7 +346,7 @@ class FinanceFragment : Fragment() {
                     if (checkedButtonIndex == 0)
                         currentCard.cardExpenses += abs(cost)
                     else
-                        currentCard.cardExpenses -= abs(cost)
+                        currentCard.cardReceipts += abs(cost)
                     if (cardsDatabaseHelper.updateData(currentCard)) {
                         for (i in 0..cardsList.lastIndex)
                             if (cardsList[i].id == cardId) {
@@ -358,7 +354,7 @@ class FinanceFragment : Fragment() {
                                 if (checkedButtonIndex == 0)
                                     cardsList[i].cardExpenses += abs(cost)
                                 else
-                                    cardsList[i].cardExpenses -= abs(cost)
+                                    cardsList[i].cardReceipts += abs(cost)
                                 cardViewPagerAdapter?.notifyItemChanged(i)
                                 break
                             }
@@ -379,10 +375,4 @@ class FinanceFragment : Fragment() {
 
         dialog.show()
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }

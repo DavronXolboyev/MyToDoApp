@@ -37,7 +37,7 @@ class SplashActivity : AppCompatActivity() {
         val titles = listOf("To Do", "Funds monitoring", "Notes")
         var i = 0
         val anim = AnimationUtils.loadAnimation(this, R.anim.my_anim)
-        object : CountDownTimer(2300, 850) {
+        object : CountDownTimer(2500, 820) {
             override fun onTick(millisUntilFinished: Long) {
                 if (i < titles.size) {
                     binding.title.text = titles[i++]
@@ -57,6 +57,6 @@ class SplashActivity : AppCompatActivity() {
             else
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish()
-        }, 2300)
+        }, 2500)
     }
 }

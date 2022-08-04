@@ -1,12 +1,23 @@
 package com.xdmobile.to_doapp.adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.taosif7.android.ringchartlib.RingChart
 import com.taosif7.android.ringchartlib.models.RingChartData
 import com.xdmobile.to_doapp.R
@@ -19,26 +30,50 @@ class CardViewPagerAdapter(
     RecyclerView.Adapter<CardViewPagerAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val ringChart = itemView.findViewById<RingChart>(R.id.item_ring_chart)
-        private val cardName = itemView.findViewById<TextView>(R.id.item_ring_card_name)
+        private val pieChart = itemView.findViewById<PieChart>(R.id.item_pie_chart)
         fun bind(position: Int) {
-            val value = 1 - cardList[position].cardExpenses / cardList[position].cardBalance
-            val data = listOf(
-                RingChartData(
-                    value,
-                    context.resources.getColor(cardList[position].cardStyle.lineColor),
-                    ""
-                )
+            val percentageReceipts =
+                cardList[position].cardReceipts / (cardList[position].cardReceipts + cardList[position].cardExpenses)
+            val percentageExpenses = 1 - percentageReceipts
+            Log.i("TAG", "bind: ${percentageExpenses + percentageReceipts}")
+
+            val entries = listOf(
+                PieEntry(percentageExpenses, "Expenses"),
+                PieEntry(percentageReceipts, "Receipts")
             )
-            ringChart.apply {
-                setLayoutMode(RingChart.renderMode.MODE_OVERLAP)
-                setData(data)
-                startAnimateLoading()
-                stopAnimation(ringChart)
+
+            val dataSet = PieDataSet(entries, cardList[position].cardName).apply {
+                colors = listOf(
+                    context.resources.getColor(cardList[position].cardStyle.lineColor1),
+                    context.resources.getColor(cardList[position].cardStyle.lineColor2)
+                )
+                valueTextColor = Color.WHITE
             }
 
-            cardName.text = cardList[position].cardName
+            val data = PieData(dataSet).apply {
+                setDrawValues(true)
+                setValueFormatter(PercentFormatter(pieChart))
+                setValueTextSize(14f)
+                setValueTypeface(Typeface.DEFAULT_BOLD)
+                setValueTextColor(Color.WHITE)
+            }
 
+            val desc = Description()
+            desc.text = ""
+
+            pieChart.apply {
+                description = desc
+                this.data = data
+                setEntryLabelColor(Color.WHITE)
+                setEntryLabelTextSize(16f)
+                centerText = cardList[position].cardName
+                setCenterTextSize(20f)
+                setHoleColor(Color.TRANSPARENT)
+                animateY(1500, Easing.EaseInOutQuad)
+                holeRadius = 65f
+                setCenterTextTypeface(Typeface.DEFAULT_BOLD)
+                invalidate()
+            }
         }
     }
 
@@ -56,15 +91,4 @@ class CardViewPagerAdapter(
         return cardList.size
     }
 
-    private fun stopAnimation(ringChart: RingChart) {
-        object : CountDownTimer(1000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-
-            }
-            override fun onFinish() {
-                ringChart.stopAnimateLoading()
-            }
-
-        }.start()
-    }
 }

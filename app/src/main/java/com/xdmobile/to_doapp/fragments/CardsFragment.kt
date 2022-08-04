@@ -1,9 +1,7 @@
 package com.xdmobile.to_doapp.fragments
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
@@ -12,7 +10,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -27,25 +24,25 @@ import com.xdmobile.to_doapp.database.CardDatabaseHelper
 import com.xdmobile.to_doapp.database.DbConstants
 import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentCardsBinding
+import com.xdmobile.to_doapp.fragments.base.BaseFragment
 import com.xdmobile.to_doapp.interfaces.CardOnLongClickListener
 import com.xdmobile.to_doapp.model.CardModel
-import org.w3c.dom.Text
 
-class CardsFragment : Fragment(), CardOnLongClickListener {
+class CardsFragment : BaseFragment<FragmentCardsBinding>(FragmentCardsBinding::inflate),
+    CardOnLongClickListener {
 
-    private var _binding: FragmentCardsBinding? = null
-    private val binding: FragmentCardsBinding get() = _binding!!
     private val cardsList: MutableList<CardModel> = mutableListOf()
     private var cardRecyclerAdapter: CardRecyclerAdapter? = null
     private val itsEmpty = "It's empty"
     private var preferences: SharedPreferences? = null
     private lateinit var cardDatabaseHelper: CardDatabaseHelper
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentCardsBinding.inflate(inflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUI()
+    }
+
+    override fun initUI() {
         cardDatabaseHelper = CardDatabaseHelper(requireContext())
         preferences =
             activity?.getSharedPreferences(DbConstants.Preference.NAME, Context.MODE_PRIVATE)
@@ -75,9 +72,6 @@ class CardsFragment : Fragment(), CardOnLongClickListener {
         binding.addCard.setOnClickListener {
             createDialogForCreateCard()
         }
-
-
-        return binding.root
     }
 
     private fun createDialogForCreateCard() {
@@ -198,7 +192,8 @@ class CardsFragment : Fragment(), CardOnLongClickListener {
                 cardType = cursor.getString(5),
                 userId = cursor.getInt(6),
                 cardStyle = CardBackground().getCardStyleById(cursor.getInt(7)),
-                cardExpenses = cursor.getFloat(8)
+                cardExpenses = cursor.getFloat(8),
+                cardReceipts = cursor.getFloat(9)
             )
             cardsList.add(cardModel)
         }
@@ -263,4 +258,6 @@ class CardsFragment : Fragment(), CardOnLongClickListener {
             }
         builder.create().show()
     }
+
+
 }

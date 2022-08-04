@@ -10,24 +10,24 @@ import androidx.annotation.RequiresApi
 import com.xdmobile.to_doapp.R
 import com.xdmobile.to_doapp.adapter.CalendarDaysAdapter
 import com.xdmobile.to_doapp.databinding.FragmentCalendarBinding
+import com.xdmobile.to_doapp.fragments.base.BaseFragment
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarFragment : Fragment() {
+class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
 
-    private var _binding: FragmentCalendarBinding? = null
-    private val binding: FragmentCalendarBinding get() = _binding!!
     private lateinit var selectedDate: LocalDate
     private var daysInMonthArray: ArrayList<String> = arrayListOf()
     private var calendarDaysAdapter: CalendarDaysAdapter? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentCalendarBinding.inflate(inflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUI()
+    }
+
+    override fun initUI() {
         selectedDate = LocalDate.now()
 
         binding.nextMonth.setOnClickListener {
@@ -37,20 +37,15 @@ class CalendarFragment : Fragment() {
             previousMonthAction()
         }
         setMonthView()
-        return binding.root
     }
-
 
     private fun setMonthView() {
         binding.monthYearText.text = monthYearFromDate(selectedDate);
-        getDaysInMonthArray(selectedDate);
-        if (calendarDaysAdapter == null) {
-            calendarDaysAdapter = CalendarDaysAdapter(requireContext(), daysInMonthArray)
-            binding.calendarRv.adapter = calendarDaysAdapter
-        } else {
-            calendarDaysAdapter?.notifyItemRangeRemoved(0, daysInMonthArray.size)
-            calendarDaysAdapter?.notifyItemInserted(0)
-        }
+        getDaysInMonthArray(selectedDate)
+        calendarDaysAdapter = CalendarDaysAdapter(requireContext(), daysInMonthArray)
+        calendarDaysAdapter?.notifyItemRangeRemoved(0, daysInMonthArray.size)
+        calendarDaysAdapter?.notifyItemInserted(0)
+        binding.calendarRv.adapter = calendarDaysAdapter
     }
 
     private fun getDaysInMonthArray(date: LocalDate){
@@ -91,5 +86,10 @@ class CalendarFragment : Fragment() {
     private fun nextMonthAction() {
         selectedDate = selectedDate.plusMonths(1)
         setMonthView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        calendarDaysAdapter = null
     }
 }

@@ -21,6 +21,7 @@ class DbConstants {
                 "${Cards.USER_ID} INTEGER NOT NULL," +
                 "${Cards.CARD_STYLE_ID} INTEGER NOT NULL," +
                 "${Cards.CARD_EXPENSES} FLOAT NOT NULL DEFAULT 0," +
+                "${Cards.CARD_RECEIPTS} FLOAT NOT NULL DEFAULT 0," +
                 "FOREIGN KEY(${Cards.USER_ID}) REFERENCES ${User.TABLE_NAME}(${User.ID})" +
                 ")"
 
@@ -86,6 +87,7 @@ class DbConstants {
         const val USER_ID = "user_id"
         const val CARD_STYLE_ID = "card_style_id"
         const val CARD_EXPENSES = "card_expenses"
+        const val CARD_RECEIPTS = "card_receipts"
     }
 
     object Preference {

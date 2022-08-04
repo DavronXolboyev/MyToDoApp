@@ -7,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.xdmobile.to_doapp.R
 import com.xdmobile.to_doapp.adapter.CardStyleViewPager2Adapter
 import com.xdmobile.to_doapp.constants.CardBackground
-import com.xdmobile.to_doapp.constants.Tools
 import com.xdmobile.to_doapp.database.CardDatabaseHelper
 import com.xdmobile.to_doapp.database.DbConstants
 import com.xdmobile.to_doapp.databinding.FragmentEditCardBinding
@@ -43,7 +41,7 @@ class EditCardFragment : Fragment() {
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.editCardIndicator.setDotIndicatorColor(resources.getColor(cards[position].cardStyle.lineColor))
+                binding.editCardIndicator.setDotIndicatorColor(resources.getColor(cards[position].cardStyle.lineColor1))
                 updateCardStyleId(position)
             }
         })

@@ -18,31 +18,27 @@ import com.xdmobile.to_doapp.database.FinanceDatabaseHelper
 import com.xdmobile.to_doapp.database.ToDoDatabaseHelper
 import com.xdmobile.to_doapp.database.UserDatabaseHelper
 import com.xdmobile.to_doapp.databinding.FragmentSettingsBinding
+import com.xdmobile.to_doapp.fragments.base.BaseFragment
 import com.xdmobile.to_doapp.model.UserModel
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsBinding::inflate) {
 
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding: FragmentSettingsBinding get() = _binding!!
     private var preferences: SharedPreferences? = null
     private val itsEmpty = "It's empty!"
     private lateinit var userDatabaseHelper: UserDatabaseHelper
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUI()
+    }
 
-        _binding = FragmentSettingsBinding.inflate(inflater)
+    override fun initUI() {
         preferences = activity?.getSharedPreferences(Preference.NAME, Context.MODE_PRIVATE)
         userDatabaseHelper = UserDatabaseHelper(requireContext())
 
         initDataToViews()
 
         initListener()
-
-
-        return binding.root
     }
 
     private fun initDataToViews() {
@@ -185,7 +181,6 @@ class SettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         initDataToViews()
-        _binding = null
         preferences = null
         super.onDestroyView()
     }

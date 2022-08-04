@@ -9,5 +9,6 @@ data class CardModel(
     val cardType: String,
     val userId: Int,
     val cardStyle: CardStyle,
-    var cardExpenses: Float = 0f
+    var cardExpenses: Float = 0f,
+    var cardReceipts: Float = 0f
 )

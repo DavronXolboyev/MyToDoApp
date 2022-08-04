@@ -32,6 +32,8 @@ class CardDatabaseHelper(context: Context) :
                 put(Cards.CARD_TYPE, cardType)
                 put(Cards.USER_ID, userId)
                 put(Cards.CARD_STYLE_ID, cardStyle.id)
+                put(Cards.CARD_EXPENSES, cardExpenses)
+                put(Cards.CARD_RECEIPTS, cardReceipts)
             }
         }
         val isInserted = db.insert(Cards.TABLE_NAME, null, contentValues)
@@ -51,6 +53,7 @@ class CardDatabaseHelper(context: Context) :
                 put(Cards.USER_ID, userId)
                 put(Cards.CARD_STYLE_ID, cardStyle.id)
                 put(Cards.CARD_EXPENSES, cardExpenses)
+                put(Cards.CARD_RECEIPTS, cardReceipts)
             }
         }
         val isUpdated = db.update(
@@ -108,7 +111,8 @@ class CardDatabaseHelper(context: Context) :
                 cardType = cursor.getString(5),
                 userId = cursor.getInt(6),
                 cardStyle = CardBackground().getCardStyleById(cursor.getInt(7)),
-                cardExpenses = cursor.getFloat(8)
+                cardExpenses = cursor.getFloat(8),
+                cardReceipts = cursor.getFloat(9)
             )
         }
         return null
@@ -122,11 +126,11 @@ class CardDatabaseHelper(context: Context) :
         return cursor.getFloat(0)
     }
 
-    fun setExpenses(cardId: Int, cost: Float): Boolean {
+    fun updateExpense(cardId: Int, cost: Float): Boolean {
         val db = this.writableDatabase
-        val oldCost = getOldCost(cardId)
+//        val oldCost = getOldCost(cardId)
         val contentValues = ContentValues().apply {
-            put(Cards.CARD_EXPENSES, oldCost + cost)
+            put(Cards.CARD_EXPENSES, cost)
         }
         val isTheCostAdded = db.update(
             Cards.TABLE_NAME,
@@ -138,7 +142,23 @@ class CardDatabaseHelper(context: Context) :
         return isTheCostAdded != -1
     }
 
-    fun updateCardStyle(cardId: Int,cardStyleId : Int) : Boolean{
+    fun updateReceipt(cardId: Int, cost: Float): Boolean {
+        val db = this.writableDatabase
+//        val oldCost = getOldCost(cardId)
+        val contentValues = ContentValues().apply {
+            put(Cards.CARD_RECEIPTS, cost)
+        }
+        val isTheCostAdded = db.update(
+            Cards.TABLE_NAME,
+            contentValues,
+            "${Cards.ID} = ?",
+            arrayOf(cardId.toString())
+        )
+
+        return isTheCostAdded != -1
+    }
+
+    fun updateCardStyle(cardId: Int, cardStyleId: Int): Boolean {
         val db = this.writableDatabase
 
         val contentValues = ContentValues().apply {
